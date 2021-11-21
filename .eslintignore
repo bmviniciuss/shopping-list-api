@@ -1,0 +1,5 @@
+coverage
+.husky
+.github
+node_modules
+generated/**
