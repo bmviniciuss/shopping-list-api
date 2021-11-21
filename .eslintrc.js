@@ -1,7 +1,8 @@
 module.exports = {
   env: {
     es2021: true,
-    node: true
+    node: true,
+    'jest/globals': true
   },
   extends: [
     'standard'
@@ -13,7 +14,8 @@ module.exports = {
   },
   plugins: [
     '@typescript-eslint',
-    'eslint-plugin-import-helpers'
+    'eslint-plugin-import-helpers',
+    'jest'
   ],
   rules: {
     'no-useless-constructor': 0,
