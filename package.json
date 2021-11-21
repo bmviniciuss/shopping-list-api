@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/bmviniciuss/shopping-list-api/issues"
   },
-  "homepage": "https://github.com/bmviniciuss/shopping-list-api#readme"
+  "homepage": "https://github.com/bmviniciuss/shopping-list-api#readme",
+  "devDependencies": {
+    "git-commit-msg-linter": "^3.2.8"
+  }
 }
