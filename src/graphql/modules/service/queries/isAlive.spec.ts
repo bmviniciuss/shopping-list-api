@@ -14,6 +14,7 @@ describe('isAlive Query', () => {
     const result = await server.executeOperation({
       query: IS_ALIVE_QUERY
     })
+
     expect(result.errors).toBeUndefined()
     expect(result.data?.isAlive).toEqual(true)
   })
