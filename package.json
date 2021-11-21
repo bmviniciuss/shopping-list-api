@@ -7,7 +7,9 @@
     "prebuild": "rimraf ./dist",
     "build": "tsc",
     "dev:run": "ts-node-dev --respawn src/index.ts",
-    "test": "jest --passWithNoTests --runInBand"
+    "test": "jest --passWithNoTests --runInBand",
+    "lint": "eslint 'src/**' --quiet",
+    "lint:fix": "eslint 'src/**' --quiet --fix"
   },
   "repository": {
     "type": "git",
@@ -36,6 +38,7 @@
     "eslint-plugin-promise": "^5.1.1",
     "git-commit-msg-linter": "^3.2.8",
     "jest": "^27.3.1",
+    "lint-staged": "^12.0.3",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.7",
     "ts-node": "^10.4.0",
@@ -48,5 +51,10 @@
     "express": "^4.17.1",
     "graphql": "^15.6.1",
     "nexus": "^1.1.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run lint:fix"
+    ]
   }
 }
