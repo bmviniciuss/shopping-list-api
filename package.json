@@ -7,9 +7,15 @@
     "prebuild": "rimraf ./dist",
     "build": "tsc",
     "dev:run": "ts-node-dev --respawn src/index.ts",
-    "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
-    "test:verbose": "jest --passWithNoTests --runInBand --watch",
-    "test:ci": "npm run test --coverage",
+
+    "test": "jest --passWithNoTests --runInBand",
+    "test:unit": "npm run test -- --watch -c ./jest-unit.config.js ",
+    "test:integration": "npm run prisma migrate deploy && npm run test -- -c ./jest-integration.config.js",
+    "test:ci": "npm run test -- --coverage",
+
+    "test:docker:up": "docker-compose --env-file ./.env.test -f ./tests/docker-compose.yml up -d",
+    "test:docker:down": "docker-compose -f ./tests/docker-compose.yml down",
+
     "lint": "eslint 'src/**' --quiet",
     "lint:fix": "eslint 'src/**' --quiet --fix",
     "lint:staged": "lint-staged",
@@ -30,6 +36,7 @@
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.13",
+    "@types/faker": "^5.5.9",
     "@types/jest": "^27.0.3",
     "@types/node": "^16.11.9",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
@@ -41,9 +48,11 @@
     "eslint-plugin-jest": "^25.2.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.1",
+    "factory-maker": "^0.2.0",
     "git-commit-msg-linter": "^3.2.8",
     "husky": "^7.0.4",
     "jest": "^27.3.1",
+    "jest-mock-extended": "^2.0.4",
     "lint-staged": "^12.0.3",
     "prisma": "^3.5.0",
     "rimraf": "^3.0.2",
@@ -57,6 +66,7 @@
     "apollo-server-express": "^3.5.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "faker": "^5.5.3",
     "graphql": "^15.6.1",
     "nexus": "^1.1.0"
   },
