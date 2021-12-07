@@ -16,6 +16,12 @@ export class PrismaUserRepository implements UserRepository {
   }
 
   async create (data: CreateUserRepoDTO): Promise<User> {
-    throw new Error('Not implemented')
+    return this.prisma.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        password: data.hashedPassword
+      }
+    })
   }
 }
