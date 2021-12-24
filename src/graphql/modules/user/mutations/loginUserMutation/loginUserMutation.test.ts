@@ -3,31 +3,26 @@ import { PrismaClient } from '.prisma/client'
 import { gql } from 'apollo-server-express'
 
 import { makeApolloServer } from '../../../../../shared/infra/graphql/setupGraphqlServer'
-import { NexusGenFieldTypes, NexusGenInputs } from '../../../../../../generated/nexus'
+import { NexusGenFieldTypes } from '../../../../../../generated/nexus'
 
 import faker from 'faker'
 
 import userFactory from '../../../../../../tests/entities/factories/userFactory'
+import { BcryptAdapter } from '../../../../../module/cryptography/implementations/BcryptAdapter'
 
-const REGISTER_USER_MUTATION = gql`
-  mutation RegisterUser($input: RegisterUserInput!) {
-    RegisterUser(input: $input) {
-      id
-      email
-      name
+const LOGIN_USER_MUTATION = gql`
+  mutation LoginUser($input: LoginUserInput!) {
+    LoginUser(input: $input) {
+      user {
+        id
+        email
+        name
+        active
+      }
+      accessToken
     }
   }
 `
-
-const makeValidInput = (): NexusGenInputs['RegisterUserInput'] => {
-  const password = faker.internet.password()
-  return {
-    email: faker.internet.email(),
-    name: faker.name.findName(),
-    password,
-    passwordConfirmation: password
-  }
-}
 
 describe('RegisterUserMutation', () => {
   let prisma: PrismaClient
@@ -35,39 +30,46 @@ describe('RegisterUserMutation', () => {
     prisma = new PrismaClient()
   })
 
-  it('should register a user successfully', async () => {
-    const server = makeApolloServer(prisma)
-    const variables = makeValidInput()
-    const result = await server.executeOperation({
-      query: REGISTER_USER_MUTATION,
-      variables: { input: variables }
-    })
-    console.log(result)
-    expect(result.errors).toBeUndefined()
-    expect(result.data).toBeDefined()
-    const user = result!.data!.RegisterUser as NexusGenFieldTypes['Mutation']['RegisterUser']
-    expect(user!.email).toEqual(variables.email)
-  })
+  it('should login a user successfully', async () => {
+    const hasher = new BcryptAdapter(10)
+    const password = faker.internet.password()
+    const hashedPassword = await hasher.hash(password)
+    const user = await prisma.user.create({ data: userFactory(1, { password: hashedPassword }) })
 
-  it('should not allow a user register to register with same email', async () => {
-    const existingUser = await prisma.user.create({
-      data: userFactory(1)
-    })
     const server = makeApolloServer(prisma)
-    const variables = makeValidInput()
     const result = await server.executeOperation({
-      query: REGISTER_USER_MUTATION,
+      query: LOGIN_USER_MUTATION,
       variables: {
         input: {
-          ...variables,
-          email: existingUser.email
+          email: user.email,
+          password
+        }
+      }
+    })
+
+    expect(result.errors).toBeUndefined()
+    expect(result.data).toBeDefined()
+
+    const data = result!.data!.LoginUser as NexusGenFieldTypes['Mutation']['LoginUser']
+    expect(data!.user.email).toEqual(user.email)
+    expect(data!.accessToken).toBeDefined()
+  })
+
+  it('should return an error if user does not exists', async () => {
+    const server = makeApolloServer(prisma)
+    const result = await server.executeOperation({
+      query: LOGIN_USER_MUTATION,
+      variables: {
+        input: {
+          email: faker.internet.email(),
+          password: faker.internet.password()
         }
       }
     })
     expect(result.errors).toBeDefined()
     expect(result.errors).toMatchInlineSnapshot(`
       Array [
-        [GraphQLError: The received email is already in use.],
+        [GraphQLError: The received email or password is invalid],
       ]
       `)
   })
