@@ -29,7 +29,6 @@ export class LoginUser implements UseCase<LoginUserDTO, LoginUserResult> {
     if (!user.active) return left(new LoginUserErrors.InvalidEmailOrPasswordError())
 
     const passwordsMatches = await this.hashComparer.compare(input.password, user.password)
-    console.log('MATCHERS: ', passwordsMatches)
 
     if (!passwordsMatches) return left(new LoginUserErrors.InvalidEmailOrPasswordError())
     const accessToken = await this.encrypter.encrypt(user.id)
