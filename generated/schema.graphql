@@ -2,7 +2,18 @@
 ### Do not make changes to this file directly
 
 
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+type LoginUserResult {
+  accessToken: String!
+  user: User!
+}
+
 type Mutation {
+  LoginUser(input: LoginUserInput!): LoginUserResult
   RegisterUser(input: RegisterUserInput!): User
 }
 

@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "rimraf ./dist",
     "build": "tsc",
-    "dev:run": "ts-node-dev --respawn src/index.ts",
+    "dev:run": "dotenv -e .env.dev -- ts-node-dev --respawn src/index.ts",
     "test": "jest --passWithNoTests --runInBand",
     "test:unit": "npm run test -- --watch -c ./jest-unit.config.js ",
     "test:prepare:integration": "dotenv -e .env.test -- npm run prisma migrate deploy",
@@ -19,7 +19,7 @@
     "lint:fix": "eslint 'src/**' --quiet --fix",
     "lint:staged": "lint-staged",
     "prepare": "husky install",
-    "prisma": "prisma"
+    "prisma": "dotenv -e .env.dev prisma"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,7 @@
     "@types/express": "^4.17.13",
     "@types/faker": "^5.5.9",
     "@types/jest": "^27.0.3",
+    "@types/jsonwebtoken": "^8.5.6",
     "@types/node": "^16.11.9",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
@@ -70,6 +71,7 @@
     "express": "^4.17.1",
     "faker": "^5.5.3",
     "graphql": "^15.6.1",
+    "jsonwebtoken": "^8.5.1",
     "nexus": "^1.1.0"
   },
   "lint-staged": {

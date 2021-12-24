@@ -66,4 +66,32 @@ describe('PrismaUserRepository', () => {
       await expect(prismaUserRepository.create(createUserData)).rejects.toThrow()
     })
   })
+
+  describe('loadByEmail', () => {
+    it('should return existing user', async () => {
+      const user = await prisma.user.create({ data: userFactory(1) })
+      const result = await prismaUserRepository.loadByEmail(user.email)
+      expect(result).toBeDefined()
+      expect(result!.id).toEqual(user.id)
+    })
+
+    it('should return null if user does not exists', async () => {
+      const result = await prismaUserRepository.loadByEmail(faker.internet.email())
+      expect(result).toEqual(null)
+    })
+  })
+
+  describe('login', () => {
+    it("should set users' accessToken", async () => {
+      const user = await prisma.user.create({ data: userFactory(1) })
+      const accessToken = faker.datatype.uuid()
+      const result = await prismaUserRepository.loginUser(user.id, accessToken)
+
+      expect(result).toBeDefined()
+      if (result) {
+        expect(result!.id).toEqual(user.id)
+        expect(result!.accessToken).toEqual(accessToken)
+      }
+    })
+  })
 })

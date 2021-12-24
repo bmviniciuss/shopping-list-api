@@ -9,4 +9,6 @@ export type CreateUserRepoDTO = {
 export interface UserRepository {
   exists: (email: string) => Promise<boolean>
   create: (data: CreateUserRepoDTO) => Promise<User>
+  loadByEmail: (email: string) => Promise<User|null>
+  loginUser: (userId: User['id'], accessToken: string) => Promise<User>
 }
