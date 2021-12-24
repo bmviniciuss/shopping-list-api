@@ -1,0 +1,16 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: 'shopping-list-db-user'
+      POSTGRES_PASSWORD: 'shopping-list-db-pass'
+    ports:
+      - '15432:5432'
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:

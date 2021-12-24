@@ -3,7 +3,7 @@
 
 
 type Mutation {
-  RegisterUser(input: RegisterUserInput!): Boolean
+  RegisterUser(input: RegisterUserInput!): User
 }
 
 type Query {
@@ -15,4 +15,11 @@ input RegisterUserInput {
   name: String!
   password: String!
   passwordConfirmation: String!
+}
+
+type User {
+  active: Boolean!
+  email: String!
+  id: ID!
+  name: String!
 }

@@ -7,10 +7,7 @@ import { UserRepository } from '../../repos/UserRepository'
 import { RegisterUserDTO } from './RegisterUserDTO'
 import { RegisterUserErrors } from './RegisterUserErrors'
 
-type RegisterUserResult = Either<
-  RegisterUserErrors.EmailInUseError,
-  User
->
+type RegisterUserResult = Either<RegisterUserErrors.EmailInUseError, User>
 
 export class RegisterUser implements UseCase<RegisterUserDTO, RegisterUserResult> {
   constructor (
