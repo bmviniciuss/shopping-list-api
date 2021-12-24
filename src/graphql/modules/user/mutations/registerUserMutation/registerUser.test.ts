@@ -64,7 +64,6 @@ describe('RegisterUserMutation', () => {
         }
       }
     })
-    console.log(result)
     expect(result.errors).toBeDefined()
     expect(result.errors).toMatchInlineSnapshot(`
       Array [
