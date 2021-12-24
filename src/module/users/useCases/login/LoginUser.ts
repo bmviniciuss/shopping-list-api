@@ -32,7 +32,7 @@ export class LoginUser implements UseCase<LoginUserDTO, LoginUserResult> {
 
     if (!passwordsMatches) return left(new LoginUserErrors.InvalidEmailOrPasswordError())
     const accessToken = await this.encrypter.encrypt(user.id)
-    const loggedUser = await this.userRepository.loginUser(accessToken)
+    const loggedUser = await this.userRepository.loginUser(user.id, accessToken)
     return right({
       user: loggedUser,
       accessToken
