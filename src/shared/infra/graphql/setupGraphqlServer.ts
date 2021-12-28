@@ -10,35 +10,48 @@ import { JWT_SECRET } from '../../../config/env'
 import { PrismaUserRepository } from '../../../module/users/repos/implementations/PrismaUserRepository'
 
 export type AppServerContext = {
- prisma: PrismaClient
+  prisma: PrismaClient
   currentUser: User | null
 }
 
-export async function getServerContext ({ req }: ExpressContext, prisma: PrismaClient): Promise<AppServerContext> {
-  const unauthorizedContext: AppServerContext = { prisma, currentUser: null }
+export interface AppServerContextGetter {
+  getAppContext: () => Promise<AppServerContext>
+}
 
-  const token = getToken(req.get('Authorization'))
-  if (!token) return unauthorizedContext
+class GetContext implements AppServerContextGetter {
+  constructor (private readonly expressContext: ExpressContext, private readonly prisma: PrismaClient) { }
 
-  const jwtAdapter = new JwtAdapter(JWT_SECRET)
-  const decodedToken = await jwtAdapter.decrypt(token)
+  async getAppContext (): Promise<AppServerContext> {
+    const unauthorizedContext:AppServerContext = { prisma: this.prisma, currentUser: null }
+    const token = getToken(this.expressContext.req.get('Authorization'))
+    if (!token) return unauthorizedContext
 
-  if (!decodedToken?.sub) return unauthorizedContext
-  const { sub } = decodedToken
+    const jwtAdapter = new JwtAdapter(JWT_SECRET)
+    const decodedToken = await jwtAdapter.decrypt(token)
 
-  const userRepository = new PrismaUserRepository(prisma)
-  const user = await userRepository.loadById(sub)
+    if (!decodedToken?.sub) return unauthorizedContext
+    const { sub } = decodedToken
 
-  if (!user) return unauthorizedContext
+    const userRepository = new PrismaUserRepository(this.prisma)
+    const user = await userRepository.loadById(sub)
 
-  return { prisma, currentUser: user }
+    if (!user) return unauthorizedContext
+
+    return {
+      prisma: this.prisma,
+      currentUser: user
+    }
+  }
 }
 
 export function makeApolloServer (prisma: PrismaClient) {
   const schema = makeSchema()
   return new ApolloServer({
     schema: schema,
-    context: (expressContext) => getServerContext(expressContext, prisma)
+    context: (expressContext) => {
+      const contextGetter = new GetContext(expressContext, prisma)
+      return contextGetter.getAppContext()
+    }
   })
 }
 
