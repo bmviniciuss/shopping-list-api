@@ -11,4 +11,5 @@ export interface UserRepository {
   create: (data: CreateUserRepoDTO) => Promise<User>
   loadByEmail: (email: string) => Promise<User|null>
   loginUser: (userId: User['id'], accessToken: string) => Promise<User>
+  loadById: (id: string) => Promise<User | null>
 }
