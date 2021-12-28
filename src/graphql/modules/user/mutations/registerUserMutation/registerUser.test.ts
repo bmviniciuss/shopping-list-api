@@ -2,12 +2,15 @@ import { PrismaClient } from '.prisma/client'
 
 import { gql } from 'apollo-server-express'
 
-import { makeApolloServer } from '../../../../../shared/infra/graphql/setupGraphqlServer'
 import { NexusGenFieldTypes, NexusGenInputs } from '../../../../../../generated/nexus'
 
 import faker from 'faker'
 
 import userFactory from '../../../../../../tests/entities/factories/userFactory'
+import {
+  IntegrationTestingContext,
+  makeApolloTestingServer
+} from '../../../../../../tests/utils/makeApolloTestingServer'
 
 const REGISTER_USER_MUTATION = gql`
   mutation RegisterUser($input: RegisterUserInput!) {
@@ -36,7 +39,7 @@ describe('RegisterUserMutation', () => {
   })
 
   it('should register a user successfully', async () => {
-    const server = makeApolloServer(prisma)
+    const server = makeApolloTestingServer(prisma, new IntegrationTestingContext(prisma, null))
     const variables = makeValidInput()
     const result = await server.executeOperation({
       query: REGISTER_USER_MUTATION,
@@ -53,7 +56,7 @@ describe('RegisterUserMutation', () => {
     const existingUser = await prisma.user.create({
       data: userFactory(1)
     })
-    const server = makeApolloServer(prisma)
+    const server = makeApolloTestingServer(prisma, new IntegrationTestingContext(prisma, null))
     const variables = makeValidInput()
     const result = await server.executeOperation({
       query: REGISTER_USER_MUTATION,

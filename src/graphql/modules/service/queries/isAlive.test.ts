@@ -2,7 +2,7 @@ import { PrismaClient } from '.prisma/client'
 
 import { gql } from 'apollo-server-express'
 
-import { makeApolloServer } from '../../../../shared/infra/graphql/setupGraphqlServer'
+import { IntegrationTestingContext, makeApolloTestingServer } from '../../../../../tests/utils/makeApolloTestingServer'
 
 const IS_ALIVE_QUERY = gql`
   query isAlive {
@@ -17,7 +17,7 @@ describe('isAlive Query', () => {
   })
 
   it('should return true', async () => {
-    const server = makeApolloServer(prisma)
+    const server = makeApolloTestingServer(prisma, new IntegrationTestingContext(prisma, null))
     const result = await server.executeOperation({
       query: IS_ALIVE_QUERY
     })

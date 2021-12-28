@@ -2,13 +2,16 @@ import { PrismaClient } from '.prisma/client'
 
 import { gql } from 'apollo-server-express'
 
-import { makeApolloServer } from '../../../../../shared/infra/graphql/setupGraphqlServer'
 import { NexusGenFieldTypes } from '../../../../../../generated/nexus'
 
 import faker from 'faker'
 
 import userFactory from '../../../../../../tests/entities/factories/userFactory'
 import { BcryptAdapter } from '../../../../../module/cryptography/implementations/BcryptAdapter'
+import {
+  IntegrationTestingContext,
+  makeApolloTestingServer
+} from '../../../../../../tests/utils/makeApolloTestingServer'
 
 const LOGIN_USER_MUTATION = gql`
   mutation LoginUser($input: LoginUserInput!) {
@@ -36,7 +39,7 @@ describe('RegisterUserMutation', () => {
     const hashedPassword = await hasher.hash(password)
     const user = await prisma.user.create({ data: userFactory(1, { password: hashedPassword }) })
 
-    const server = makeApolloServer(prisma)
+    const server = makeApolloTestingServer(prisma, new IntegrationTestingContext(prisma, null))
     const result = await server.executeOperation({
       query: LOGIN_USER_MUTATION,
       variables: {
@@ -56,7 +59,7 @@ describe('RegisterUserMutation', () => {
   })
 
   it('should return an error if user does not exists', async () => {
-    const server = makeApolloServer(prisma)
+    const server = makeApolloTestingServer(prisma, new IntegrationTestingContext(prisma, null))
     const result = await server.executeOperation({
       query: LOGIN_USER_MUTATION,
       variables: {

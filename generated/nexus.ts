@@ -73,6 +73,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     isAlive: boolean | null; // Boolean
+    me: NexusGenRootTypes['User'] | null; // User
   }
   User: { // field return type
     active: boolean; // Boolean!
@@ -93,6 +94,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     isAlive: 'Boolean'
+    me: 'User'
   }
   User: { // field return type name
     active: 'Boolean'
