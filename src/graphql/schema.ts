@@ -3,17 +3,19 @@ import { printSchema, lexicographicSortSchema } from 'graphql'
 import path from 'path'
 
 import { builder } from './builder'
+
 import './resolvers'
 
 export const schema = builder.toSchema({})
 
-console.log(process.env.NODE_ENV)
-
 if (process.env.NODE_ENV === 'dev') {
   const schemaAsString = printSchema(lexicographicSortSchema(schema))
 
-  fs.writeFileSync(
-    path.join(process.cwd(), 'src/graphql/schema.gql'),
-    schemaAsString
-  )
+  const generatedFolderPath = path.join(process.cwd(), 'generated')
+  const schemaPath = path.join(generatedFolderPath, 'schema.graphql')
+
+  if (!fs.existsSync(generatedFolderPath)) {
+    fs.mkdirSync(generatedFolderPath)
+  }
+  fs.writeFileSync(schemaPath, schemaAsString)
 }
