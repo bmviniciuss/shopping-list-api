@@ -2,7 +2,7 @@ import { PrismaClient } from '.prisma/client'
 
 import { gql } from 'apollo-server-express'
 
-import { IntegrationTestingContext, makeApolloTestingServer } from '../../../../../tests/utils/makeApolloTestingServer'
+import { IntegrationTestingContext, makeApolloTestingServer } from '../../../../tests/utils/makeApolloTestingServer'
 
 const IS_ALIVE_QUERY = gql`
   query isAlive {
