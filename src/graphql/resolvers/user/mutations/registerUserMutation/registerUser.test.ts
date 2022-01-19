@@ -1,9 +1,6 @@
 import { PrismaClient } from '.prisma/client'
 
 import { gql } from 'apollo-server-express'
-
-import { NexusGenFieldTypes, NexusGenInputs } from '../../../../../../generated/nexus'
-
 import faker from 'faker'
 
 import userFactory from '../../../../../../tests/entities/factories/userFactory'
@@ -22,7 +19,7 @@ const REGISTER_USER_MUTATION = gql`
   }
 `
 
-const makeValidInput = (): NexusGenInputs['RegisterUserInput'] => {
+const makeValidInput = () => {
   const password = faker.internet.password()
   return {
     email: faker.internet.email(),
@@ -45,10 +42,9 @@ describe('RegisterUserMutation', () => {
       query: REGISTER_USER_MUTATION,
       variables: { input: variables }
     })
-    console.log(result)
     expect(result.errors).toBeUndefined()
     expect(result.data).toBeDefined()
-    const user = result!.data!.RegisterUser as NexusGenFieldTypes['Mutation']['RegisterUser']
+    const user = result!.data!.RegisterUser
     expect(user!.email).toEqual(variables.email)
   })
 

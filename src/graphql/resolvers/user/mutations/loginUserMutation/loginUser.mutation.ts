@@ -6,7 +6,7 @@ import { PrismaUserRepository } from '../../../../../module/users/repos/implemen
 import { LoginUser } from '../../../../../module/users/useCases/login/LoginUser'
 import { builder } from '../../../../builder'
 
-export const LoginUserMutationInput = builder.inputType('LoginUserMutationInput', {
+export const LoginUserMutationInput = builder.inputType('LoginUserInput', {
   fields: (t) => ({
     email: t.string({ required: true }),
     password: t.string({ required: true })

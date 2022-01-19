@@ -24,13 +24,11 @@ class GetContext implements AppServerContextGetter {
   async getAppContext (): Promise<AppServerContext> {
     const unauthorizedContext:AppServerContext = { prisma: this.prisma, currentUser: null }
     const token = getToken(this.expressContext.req.get('Authorization'))
-    console.log('TOKEN: ', token)
 
     if (!token) return unauthorizedContext
 
     const jwtAdapter = new JwtAdapter(JWT_SECRET)
     const decodedToken = await jwtAdapter.decrypt(token)
-    console.log('decodedToken: ', decodedToken)
 
     if (!decodedToken?.sub) return unauthorizedContext
     const { sub } = decodedToken
