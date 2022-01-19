@@ -14,6 +14,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  CreateCategoryInput: { // input type
+    description?: string | null; // String
+    name: string; // String!
+  }
   LoginUserInput: { // input type
     email: string; // String!
     password: string; // String!
@@ -38,6 +42,12 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  Category: { // root type
+    active: boolean; // Boolean!
+    description?: string | null; // String
+    id: string; // ID!
+    name: string; // String!
+  }
   LoginUserResult: { // root type
     accessToken: string; // String!
     user: NexusGenRootTypes['User']; // User!
@@ -63,15 +73,25 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
+  Category: { // field return type
+    active: boolean; // Boolean!
+    createdBy: NexusGenRootTypes['User'] | null; // User
+    description: string | null; // String
+    id: string; // ID!
+    name: string; // String!
+  }
   LoginUserResult: { // field return type
     accessToken: string; // String!
     user: NexusGenRootTypes['User']; // User!
   }
   Mutation: { // field return type
+    CreateCategory: NexusGenRootTypes['Category'] | null; // Category
     LoginUser: NexusGenRootTypes['LoginUserResult'] | null; // LoginUserResult
     RegisterUser: NexusGenRootTypes['User'] | null; // User
   }
   Query: { // field return type
+    GetCategories: NexusGenRootTypes['Category'][] | null; // [Category!]
+    GetCategoryById: NexusGenRootTypes['Category'] | null; // Category
     isAlive: boolean | null; // Boolean
     me: NexusGenRootTypes['User'] | null; // User
   }
@@ -84,15 +104,25 @@ export interface NexusGenFieldTypes {
 }
 
 export interface NexusGenFieldTypeNames {
+  Category: { // field return type name
+    active: 'Boolean'
+    createdBy: 'User'
+    description: 'String'
+    id: 'ID'
+    name: 'String'
+  }
   LoginUserResult: { // field return type name
     accessToken: 'String'
     user: 'User'
   }
   Mutation: { // field return type name
+    CreateCategory: 'Category'
     LoginUser: 'LoginUserResult'
     RegisterUser: 'User'
   }
   Query: { // field return type name
+    GetCategories: 'Category'
+    GetCategoryById: 'Category'
     isAlive: 'Boolean'
     me: 'User'
   }
@@ -106,11 +136,19 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    CreateCategory: { // args
+      input: NexusGenInputs['CreateCategoryInput']; // CreateCategoryInput!
+    }
     LoginUser: { // args
       input: NexusGenInputs['LoginUserInput']; // LoginUserInput!
     }
     RegisterUser: { // args
       input: NexusGenInputs['RegisterUserInput']; // RegisterUserInput!
+    }
+  }
+  Query: {
+    GetCategoryById: { // args
+      id: string; // ID!
     }
   }
 }

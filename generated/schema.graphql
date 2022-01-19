@@ -2,6 +2,19 @@
 ### Do not make changes to this file directly
 
 
+type Category {
+  active: Boolean!
+  createdBy: User
+  description: String
+  id: ID!
+  name: String!
+}
+
+input CreateCategoryInput {
+  description: String
+  name: String!
+}
+
 input LoginUserInput {
   email: String!
   password: String!
@@ -13,11 +26,14 @@ type LoginUserResult {
 }
 
 type Mutation {
+  CreateCategory(input: CreateCategoryInput!): Category
   LoginUser(input: LoginUserInput!): LoginUserResult
   RegisterUser(input: RegisterUserInput!): User
 }
 
 type Query {
+  GetCategories: [Category!]
+  GetCategoryById(id: ID!): Category
   isAlive: Boolean
   me: User
 }
