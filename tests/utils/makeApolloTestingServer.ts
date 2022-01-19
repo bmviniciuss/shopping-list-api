@@ -2,7 +2,7 @@ import { PrismaClient, User } from '.prisma/client'
 
 import { ApolloServer } from 'apollo-server-express'
 
-import { makeSchema } from '../../src/graphql/schema'
+import { makeSchema } from '../../src/graphql/builder'
 import { AppServerContext, AppServerContextGetter } from '../../src/shared/infra/graphql/setupGraphqlServer'
 
 export function makeApolloTestingServer (prisma: PrismaClient, contextGetter: AppServerContextGetter) {

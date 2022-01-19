@@ -3,3 +3,4 @@ coverage
 .github
 node_modules
 generated/**
+**/*.gql

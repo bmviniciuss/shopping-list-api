@@ -1,17 +1,19 @@
-import {
-  makeSchema as nexusMakeSchema
-} from 'nexus'
+import fs from 'fs'
+import { printSchema, lexicographicSortSchema } from 'graphql'
 import path from 'path'
 
-import * as typeDefs from './modules'
+import { builder } from './builder'
+import './resolvers'
 
-export function makeSchema () {
-  const schema = nexusMakeSchema({
-    types: [typeDefs],
-    outputs: {
-      schema: path.join(__dirname, '/../../generated/schema.graphql'),
-      typegen: path.join(__dirname, '/../../generated/nexus.ts')
-    }
-  })
-  return schema
+export const schema = builder.toSchema({})
+
+console.log(process.env.NODE_ENV)
+
+if (process.env.NODE_ENV === 'dev') {
+  const schemaAsString = printSchema(lexicographicSortSchema(schema))
+
+  fs.writeFileSync(
+    path.join(process.cwd(), 'src/graphql/schema.gql'),
+    schemaAsString
+  )
 }

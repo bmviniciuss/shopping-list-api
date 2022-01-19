@@ -3,11 +3,11 @@ import { PrismaClient, User } from '.prisma/client'
 import { ApolloServer, ExpressContext } from 'apollo-server-express'
 import { Express } from 'express'
 
-import { makeSchema } from '../../../graphql/schema'
 import { getToken } from '../../utils/getToken'
 import { JwtAdapter } from '../../../module/cryptography/implementations/JwtAdapter'
 import { JWT_SECRET } from '../../../config/env'
 import { PrismaUserRepository } from '../../../module/users/repos/implementations/PrismaUserRepository'
+import { schema } from '../../../graphql/schema'
 
 export type AppServerContext = {
   prisma: PrismaClient
@@ -48,7 +48,6 @@ class GetContext implements AppServerContextGetter {
 }
 
 export function makeApolloServer (prisma: PrismaClient) {
-  const schema = makeSchema()
   return new ApolloServer({
     schema: schema,
     context: (expressContext) => {

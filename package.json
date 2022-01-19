@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "rimraf ./dist",
     "build": "tsc",
-    "dev:run": "dotenv -e .env.dev -- ts-node-dev --respawn src/index.ts",
+    "dev:run": "NODE_ENV=dev dotenv -e .env.dev -- ts-node-dev --respawn src/index.ts",
     "test": "jest --passWithNoTests --runInBand",
     "test:unit": "npm run test -- --watch -c ./jest-unit.config.js ",
     "test:prepare:integration": "dotenv -e .env.test -- npm run prisma migrate deploy",
@@ -63,6 +63,8 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
+    "@giraphql/core": "^2.23.0",
+    "@giraphql/plugin-simple-objects": "^2.13.0",
     "@prisma/client": "^3.5.0",
     "apollo-server-express": "^3.5.0",
     "bcrypt": "^5.0.1",
